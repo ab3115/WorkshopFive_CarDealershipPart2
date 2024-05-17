@@ -63,9 +63,11 @@ public class UserInterface {
         } while(mainMenuCommand != 99);
     }
 
+
     private void init(){
         this.dealership = DealershipFileManager.getDealership();
     }
+
 
     private void displayVehicles(List<Vehicle> vehicles){
 
@@ -93,6 +95,7 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehiclesByPrice(min, max);
         displayVehicles(filteredVehicles);
     }
+
     public void processGetByMakeModelRequest(){
         scanner.nextLine(); // Consume Line
 
@@ -104,6 +107,7 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehiclesByMakeModel(make, model);
         displayVehicles(filteredVehicles);
     }
+
     public void processGetByYearRequest(){
         System.out.print("Minimum year: ");
         int min = scanner.nextInt();
