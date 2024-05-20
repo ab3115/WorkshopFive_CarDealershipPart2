@@ -1,6 +1,7 @@
 package com.ps;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,12 +9,12 @@ public class UserInterface {
     private Dealership dealership;
     private static Scanner scanner = new Scanner(System.in);
 
-    public void display(){
+    public void display() {
         init();
 
         int mainMenuCommand;
 
-        do{
+        do {
             // Needs refactoring
             System.out.println("1- Find vehicles within a price range");
             System.out.println("2- Find vehicles by make / model");
@@ -31,7 +32,7 @@ public class UserInterface {
 
             mainMenuCommand = scanner.nextInt();
 
-            switch (mainMenuCommand){
+            switch (mainMenuCommand) {
                 case 1:
                     processGetByPriceRequest();
                     break;
@@ -60,23 +61,23 @@ public class UserInterface {
                     processRemoveVehicleRequest();
                     break;
                 case 10:
-                    processSellVehicleRequest();
+                    processCheckoutVehicleRequest();
                     break;
                 case 99:
                     break;
             }
-        } while(mainMenuCommand != 99);
+        } while (mainMenuCommand != 99);
     }
 
 
-    private void init(){
+    private void init() {
         this.dealership = DealershipFileManager.getDealership();
     }
 
 
-    private void displayVehicles(List<Vehicle> vehicles){
+    private void displayVehicles(List<Vehicle> vehicles) {
 
-        for(Vehicle vehicle: vehicles){
+        for (Vehicle vehicle : vehicles) {
 //            "----  All Vehicles ----
             System.out.printf("VIN: %d, Year: %d, Make: %s, Model: %s, Type: %s, Color: %s, Odometer: %d, Price: %.2f\n",
                     vehicle.getVin(),
@@ -91,7 +92,7 @@ public class UserInterface {
         }
     }
 
-    public void processGetByPriceRequest(){
+    public void processGetByPriceRequest() {
         System.out.print("Minimum price: ");
         int min = scanner.nextInt();
         System.out.print("Maximum price: ");
@@ -101,7 +102,7 @@ public class UserInterface {
         displayVehicles(filteredVehicles);
     }
 
-    public void processGetByMakeModelRequest(){
+    public void processGetByMakeModelRequest() {
         scanner.nextLine(); // Consume Line
 
         System.out.print("Make: ");
@@ -113,7 +114,7 @@ public class UserInterface {
         displayVehicles(filteredVehicles);
     }
 
-    public void processGetByYearRequest(){
+    public void processGetByYearRequest() {
         System.out.print("Minimum year: ");
         int min = scanner.nextInt();
         System.out.print("Maximum year: ");
@@ -122,7 +123,8 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehicleByYear(min, max);
         displayVehicles(filteredVehicles);
     }
-    public void processGetByColorRequest(){
+
+    public void processGetByColorRequest() {
         scanner.nextLine(); // Consume Line
 
         System.out.print("Color: ");
@@ -131,7 +133,8 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehicleByColor(color);
         displayVehicles(filteredVehicles);
     }
-    public void processGetByMileageRequest(){
+
+    public void processGetByMileageRequest() {
         System.out.print("Minimum Mileage: ");
         int min = scanner.nextInt();
         System.out.print("Maximum Mileage: ");
@@ -140,7 +143,8 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehiclesByMileage(min, max);
         displayVehicles(filteredVehicles);
     }
-    public void processGetByVehicleTypeRequest(){
+
+    public void processGetByVehicleTypeRequest() {
         scanner.nextLine(); // Consume Line
 
         System.out.print("Vehicle type: ");
@@ -149,12 +153,14 @@ public class UserInterface {
         List<Vehicle> filteredVehicles = dealership.getVehiclesByType(type);
         displayVehicles(filteredVehicles);
     }
-    public void processGetAllVehiclesRequest(){
+
+    public void processGetAllVehiclesRequest() {
         List<Vehicle> allVehicles = dealership.getAllVehicles();
         System.out.println("------ All Vehicles ------");
         displayVehicles(allVehicles);
     }
-    public void processAddVehicleRequest(){
+
+    public void processAddVehicleRequest() {
         System.out.print("VIN: ");
         int vin = scanner.nextInt();
 
@@ -187,13 +193,14 @@ public class UserInterface {
 
         DealershipFileManager.saveDealership(this.dealership);
     }
-    public void processRemoveVehicleRequest(){
+
+    public void processRemoveVehicleRequest() {
         List<Vehicle> allVehicles = this.dealership.getAllVehicles();
         displayVehicles(allVehicles);
         System.out.print("Which would you like to remove? VIN: ");
         int vin = scanner.nextInt();
-        for(Vehicle vehicle: allVehicles){
-            if(vehicle.getVin() == vin){
+        for (Vehicle vehicle : allVehicles) {
+            if (vehicle.getVin() == vin) {
                 dealership.removeVehicle(vehicle);
                 System.out.println("Vehicle found and removed");
                 DealershipFileManager.saveDealership(this.dealership);
@@ -204,9 +211,11 @@ public class UserInterface {
         System.out.println("Vehicle not found");
     }
 
-    public void processSellVehicleRequest(){
+    public void processCheckoutVehicleRequest() {
         System.out.println("Welcome and Congratulations! Please enter the following:");
         LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = date.format(formatter);
         System.out.println("Customer first & last name:");
         String name = scanner.next();
         System.out.println("Customer email:");
@@ -215,11 +224,13 @@ public class UserInterface {
         displayVehicles(allVehicles);
         System.out.print("Which would you like to purchase? VIN: ");
         int vin = scanner.nextInt();
-        Vehicle vehicle_sold;
-        for(Vehicle vehicle: allVehicles){
-            if(vehicle.getVin() == vin){
+        Vehicle vehicle_sold = null;
+
+        for (Vehicle vehicle : allVehicles) {
+            if (vehicle.getVin() == vin) {
                 vehicle_sold = vehicle;
-                dealership.removeVehicle(vehicle);
+            }
+        }
                 System.out.printf("You've selected: %d | %d | %s | %s | %s | %s | %d | %.2f\n",
                         vehicle_sold.getVin(),
                         vehicle_sold.getYear(),
@@ -230,16 +241,33 @@ public class UserInterface {
                         vehicle_sold.getOdometer(),
                         vehicle_sold.getPrice()
                 );
+
+        System.out.println("Would you like to purchase or lease the vehicle?");
+        System.out.println("\t(1)Purchase");
+        System.out.println("\t(2)Lease");
+        int sell_lease_choice = scanner.nextInt();
+
+        if (sell_lease_choice == 1) {
+            System.out.println("Would you like to finance the vehicle?");
+            System.out.println("\tY || N");
+            String user_choice = scanner.next();
+            boolean finance_boolean = false;
+
+            if (user_choice.equalsIgnoreCase("Y")) {
+                finance_boolean = true;
+            } else {
+                finance_boolean = false;
             }
-        System.out.println("Would you like to finance the vehicle?");
-        System.out.println("\tY || N");
-        String finance = scanner.next();
-        if(finance.equalsIgnoreCase("Y")){
 
+            SalesContract salesContract = new SalesContract(formattedDate, name, email, vehicle_sold, finance_boolean);
+            ContractFileManager.saveContract(salesContract);
+
+        } else if(sell_lease_choice == 2){
+            LeaseContract leaseContract = new LeaseContract(formattedDate, name, email, vehicle_sold);
+            ContractFileManager.saveContract(leaseContract);
         }
+        DealershipFileManager.saveDealership(this.dealership);
+        this.dealership.removeVehicle(vehicle_sold);
     }
 
-    public void processLeaseVehicleRequest(){
-
-    }
 }
