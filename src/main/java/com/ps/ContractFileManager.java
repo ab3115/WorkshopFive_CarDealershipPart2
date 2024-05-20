@@ -1,7 +1,5 @@
 package com.ps;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class ContractFileManager {
 
@@ -53,4 +51,26 @@ public class ContractFileManager {
         }
 
     }
+
+    public static void getContract(){
+        try{
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("contracts.csv"));
+            String contract_info = bufferedReader.readLine();
+            int count = 0;
+            while(contract_info != null && count <= 3) {
+                String[] splitFirstLine = contract_info.split("\\|");
+
+                String date = splitFirstLine[0];
+                String name = splitFirstLine[1];
+                String email = splitFirstLine[2];
+
+                String[] splitSecondLine = contract_info.split("\\|");
+
+                String[] splitThirdLine = contract_info.split("\\|");
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

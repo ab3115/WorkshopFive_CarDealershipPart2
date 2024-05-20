@@ -26,6 +26,7 @@ public class UserInterface {
             System.out.println("8- Add a vehicle");
             System.out.println("9- Remove a vehicle");
             System.out.println("10-Checkout a vehicle");
+            System.out.println("11-Enter Admin. mode");
             System.out.println("99- Quit");
 
             System.out.print("Please choose an option: ");
@@ -62,6 +63,9 @@ public class UserInterface {
                     break;
                 case 10:
                     processCheckoutVehicleRequest();
+                    break;
+                case 11:
+                    processAdminMode();
                     break;
                 case 99:
                     break;
@@ -220,6 +224,7 @@ public class UserInterface {
         String name = scanner.next();
         System.out.println("Customer email:");
         String email = scanner.next();
+        scanner.next();
         List<Vehicle> allVehicles = this.dealership.getAllVehicles();
         displayVehicles(allVehicles);
         System.out.print("Which would you like to purchase? VIN: ");
@@ -268,6 +273,18 @@ public class UserInterface {
         }
         DealershipFileManager.saveDealership(this.dealership);
         this.dealership.removeVehicle(vehicle_sold);
+    }
+
+    public void processAdminMode(){
+        String password = "gregisCool";
+        System.out.println("Please enter the admin. password:");
+        String input = scanner.next();
+        if(password.equals(input)){
+            AdminUserInterface adminUserInterface = new AdminUserInterface();
+        adminUserInterface.adminUserMenu();
+        }else{
+            System.out.println("Please enter the correct password to proceed.");
+        }
     }
 
 }
