@@ -5,15 +5,19 @@ public class SalesContract extends Contract{
     private double recording_fee;
     private double processing_fee;
     private boolean finance;
-    private double monthly_payment;
 
-    public SalesContract(String date, String customer_name, String customer_email, String vehicle_sold, double total_price, double monthly_payment, double sales_tax_amount, double recording_fee, double prcoessing_fee, boolean finance, double monthly_payment1) {
-        super(date, customer_name, customer_email, vehicle_sold, total_price, monthly_payment);
-        this.sales_tax_amount = sales_tax_amount;
-        this.recording_fee = recording_fee;
-        this.processing_fee = processing_fee;
+
+    public SalesContract(String date, String customer_name, String customer_email, Vehicle vehicle_sold,double processing_fee, boolean finance){
+        super(date, customer_name, customer_email, vehicle_sold);
+        this.sales_tax_amount = 0.05 * vehicle_sold.getPrice();
+        this.recording_fee = 100;
+        if(vehicle_sold.getPrice() < 10000){
+            this.processing_fee = 295;
+        }else{
+            this.processing_fee = 495;
+        }
         this.finance = finance;
-        this.monthly_payment = monthly_payment1;
+
     }
 
     public double getSales_tax_amount() {
@@ -46,6 +50,26 @@ public class SalesContract extends Contract{
 
     public void setFinance(boolean finance) {
         this.finance = finance;
+    }
+
+    @Override
+    public double getTotal_price() {
+        this.total_price =(vehicle_sold.getPrice() + sales_tax_amount + recording_fee + processing_fee);
+        return total_price;
+    }
+
+    @Override
+    public double getMonthly_payment(){
+
+        double temp_total_price = getTotal_price();
+        if (this.finance && (temp_total_price >= 10000)){
+            this.monthly_payment = temp_total_price * 0.0425;
+        } else if (this.finance && (temp_total_price < 10_000)) {
+            this.monthly_payment = total_price * 0.0525;
+        } else {
+            this.monthly_payment = 0;
+        }
+        return this.monthly_payment;
     }
 
 
