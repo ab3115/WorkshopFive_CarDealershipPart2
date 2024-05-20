@@ -1,5 +1,6 @@
 package com.ps;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,6 +24,7 @@ public class UserInterface {
             System.out.println("7- List ALL vehicles");
             System.out.println("8- Add a vehicle");
             System.out.println("9- Remove a vehicle");
+            System.out.println("10-Checkout a vehicle");
             System.out.println("99- Quit");
 
             System.out.print("Please choose an option: ");
@@ -56,6 +58,9 @@ public class UserInterface {
                     break;
                 case 9:
                     processRemoveVehicleRequest();
+                    break;
+                case 10:
+                    processSellVehicleRequest();
                     break;
                 case 99:
                     break;
@@ -187,7 +192,6 @@ public class UserInterface {
         displayVehicles(allVehicles);
         System.out.print("Which would you like to remove? VIN: ");
         int vin = scanner.nextInt();
-
         for(Vehicle vehicle: allVehicles){
             if(vehicle.getVin() == vin){
                 dealership.removeVehicle(vehicle);
@@ -198,5 +202,44 @@ public class UserInterface {
         }
 
         System.out.println("Vehicle not found");
+    }
+
+    public void processSellVehicleRequest(){
+        System.out.println("Welcome and Congratulations! Please enter the following:");
+        LocalDate date = LocalDate.now();
+        System.out.println("Customer first & last name:");
+        String name = scanner.next();
+        System.out.println("Customer email:");
+        String email = scanner.next();
+        List<Vehicle> allVehicles = this.dealership.getAllVehicles();
+        displayVehicles(allVehicles);
+        System.out.print("Which would you like to purchase? VIN: ");
+        int vin = scanner.nextInt();
+        Vehicle vehicle_sold;
+        for(Vehicle vehicle: allVehicles){
+            if(vehicle.getVin() == vin){
+                vehicle_sold = vehicle;
+                dealership.removeVehicle(vehicle);
+                System.out.printf("You've selected: %d | %d | %s | %s | %s | %s | %d | %.2f\n",
+                        vehicle_sold.getVin(),
+                        vehicle_sold.getYear(),
+                        vehicle_sold.getMake(),
+                        vehicle_sold.getModel(),
+                        vehicle_sold.getVehicleType(),
+                        vehicle_sold.getColor(),
+                        vehicle_sold.getOdometer(),
+                        vehicle_sold.getPrice()
+                );
+            }
+        System.out.println("Would you like to finance the vehicle?");
+        System.out.println("\tY || N");
+        String finance = scanner.next();
+        if(finance.equalsIgnoreCase("Y")){
+
+        }
+    }
+
+    public void processLeaseVehicleRequest(){
+
     }
 }

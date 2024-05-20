@@ -46,6 +46,7 @@ public class ContractFileManager {
                             contract.getMonthly_payment()
                     ));
                 }
+                bufferedWriter.close();
         }catch(IOException e){
             e.printStackTrace();
         }
